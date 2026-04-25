@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حجز شاليه</title>
+
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#f2f5f4;color:#17231f}
+.wrapper{min-height:100vh;padding:18px;background:linear-gradient(180deg,#0b6b55,#f2f5f4 42%)}
+.card{max-width:480px;margin:auto;background:#fff;border-radius:24px;padding:22px;box-shadow:0 18px 45px rgba(0,0,0,.18)}
+h1{margin:0 0 6px;color:#0b6b55;font-size:26px;text-align:center}
+.subtitle{margin:0 0 22px;text-align:center;color:#66726e;font-size:14px;line-height:1.7}
+.field{margin-bottom:15px}
+label{display:block;font-size:14px;font-weight:800;margin-bottom:7px}
+input,select,textarea{width:100%;border:1px solid #d8e2df;background:#f9fbfa;border-radius:14px;padding:14px;font-size:15px;outline:none;font-family:inherit}
+input:focus,select:focus,textarea:focus{border-color:#0b6b55;box-shadow:0 0 0 3px rgba(11,107,85,.12)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.serviceDropdown{position:relative}
+.serviceBtn{width:100%;border:1px solid #d8e2df;background:#f9fbfa;border-radius:14px;padding:14px;font-size:15px;text-align:right;color:#17231f;cursor:pointer}
+.serviceList{display:none;margin-top:8px;background:#fff;border:1px solid #d8e2df;border-radius:14px;max-height:260px;overflow:auto;padding:8px}
+.serviceList.show{display:block}
+.serviceItem{display:flex;justify-content:space-between;align-items:center;background:#f3f7f5;border:1px solid #dce7e3;border-radius:12px;padding:11px;margin-bottom:8px;font-size:14px;font-weight:700}
+.serviceItem input{width:auto}
+.notice{background:#fff7df;color:#715000;border:1px solid #efd28a;border-radius:15px;padding:13px;font-size:13px;line-height:1.8;margin:18px 0}
+button{width:100%;border:0;border-radius:16px;padding:15px;background:linear-gradient(135deg,#11946d,#075843);color:#fff;font-size:17px;font-weight:900;cursor:pointer}
+button:disabled{opacity:.65;cursor:not-allowed}
+.success{display:none;margin-top:15px;padding:14px;border-radius:15px;background:#e8fff4;color:#087047;border:1px solid #a8ebce;text-align:center;font-weight:900}
+
+.reviewBox{
+  display:none;
+  margin-top:20px;
+  background:#fff;
+  border-radius:22px;
+  overflow:hidden;
+  border:1px solid #d9e7e2;
+  box-shadow:0 18px 42px rgba(7,88,67,.17);
+}
+
+.invoiceTop{
+  padding:20px 18px 16px;
+  background:#fbfdfc;
+  border-bottom:3px solid #0b6b55;
+}
+
+.invoiceHead{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.invoiceTitle h2{
+  margin:0;
+  color:#0b6b55;
+  font-size:26px;
+  font-weight:900;
+  line-height:1.3;
+}
+
+.invoiceTitle p{
+  margin:6px 0 0;
+  color:#66726e;
+  font-size:13px;
+  font-weight:800;
+}
+
+.invoiceBadge{
+  background:#fff3d6;
+  color:#8a5a00;
+  border:1px solid #f0cf83;
+  padding:7px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.invoiceMeta{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:16px;
+}
+
+.invoiceMetaBox{
+  background:#0b6b55;
+  color:#fff;
+  border-radius:15px;
+  padding:11px 12px;
+}
+
+.invoiceMetaBox span{
+  display:block;
+  font-size:12px;
+  opacity:.85;
+  margin-bottom:5px;
+  font-weight:700;
+}
+
+.invoiceMetaBox strong{
+  display:block;
+  font-size:14px;
+  font-weight:900;
+  direction:ltr;
+  text-align:right;
+}
+
+.invoiceContent{
+  padding:16px 18px 8px;
+  background:#fff;
+}
+
+.invoiceRow{
+  display:grid;
+  grid-template-columns:125px 1fr;
+  gap:10px;
+  padding:13px 0;
+  border-bottom:1px dashed #d8e2df;
+  font-size:15px;
+}
+
+.invoiceRow:last-child{border-bottom:0}
+
+.invoiceRow span{
+  color:#66726e;
+  font-weight:900;
+  line-height:1.8;
+}
+
+.invoiceRow strong{
+  color:#17231f;
+  text-align:right;
+  line-height:1.9;
+  font-weight:900;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+
+.invoiceFooterNote{
+  margin:8px 18px 18px;
+  padding:13px;
+  background:#fff7df;
+  border:1px solid #efd28a;
+  color:#715000;
+  border-radius:15px;
+  font-size:13px;
+  line-height:1.8;
+  font-weight:800;
+}
+
+.reviewActions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  padding:0 18px 18px;
+  background:#fff;
+}
+
+.editBtn{background:#eef4f1;color:#17231f}
+.confirmBtn{background:linear-gradient(135deg,#11946d,#075843)}
+.sendingText{display:none;margin-top:12px;text-align:center;color:#0b6b55;font-size:13px;font-weight:800}
+
+/* فاتورة مخفية للإرسال فقط */
+.captureInvoice{
+  position:fixed;
+  right:-5000px;
+  top:0;
+  width:1080px;
+  min-height:1080px;
+  background:#ffffff;
+  color:#17231f;
+  padding:42px;
+  font-family:Tahoma,Arial,sans-serif;
+  pointer-events:none;
+  z-index:999999;
+  direction:rtl;
+  unicode-bidi:isolate;
+  visibility:visible;
+  opacity:1;
+}
+
+.captureInvoice *{
+  direction:rtl;
+  unicode-bidi:plaintext;
+  letter-spacing:0 !important;
+}
+
+.captureBox{
+  width:100%;
+  min-height:996px;
+  background:#fff;
+  border:2px solid #0b6b55;
+  border-radius:34px;
+  overflow:visible;
+}
+
+.captureHeader{
+  background:linear-gradient(135deg,#0b6b55,#11946d);
+  color:#fff;
+  padding:42px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:20px;
+  border-radius:30px 30px 0 0;
+}
+
+.captureHeader h2{
+  margin:0;
+  font-size:46px;
+  font-weight:900;
+  line-height:1.3;
+  text-align:right;
+}
+
+.captureHeader p{
+  margin:8px 0 0;
+  font-size:22px;
+  font-weight:700;
+  opacity:.92;
+  text-align:right;
+}
+
+.captureBadge{
+  background:#fff3d6;
+  color:#8a5a00;
+  border:1px solid #f0cf83;
+  padding:12px 24px;
+  border-radius:999px;
+  font-size:19px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.captureMeta{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  padding:28px 42px;
+  background:#f8fbfa;
+  border-bottom:1px solid #d8e2df;
+}
+
+.captureMeta div{
+  border:1px solid #d8e2df;
+  border-radius:20px;
+  padding:18px;
+  background:#fff;
+}
+
+.captureMeta span{
+  display:block;
+  color:#66726e;
+  font-size:19px;
+  font-weight:900;
+  margin-bottom:8px;
+  text-align:right;
+}
+
+.captureMeta strong{
+  display:block;
+  color:#17231f;
+  font-size:24px;
+  font-weight:900;
+  text-align:right;
+}
+
+.captureContent{
+  padding:28px 42px 8px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px 28px;
+}
+
+.captureRow{
+  border-bottom:1px dashed #d8e2df;
+  padding:12px 0;
+}
+
+.captureRow.full{
+  grid-column:1 / -1;
+}
+
+.captureRow span{
+  display:block;
+  color:#66726e;
+  font-size:18px;
+  font-weight:900;
+  margin-bottom:6px;
+  text-align:right;
+}
+
+.captureRow strong{
+  display:block;
+  color:#17231f;
+  font-size:22px;
+  line-height:1.65;
+  font-weight:900;
+  text-align:right;
+  white-space:normal;
+  overflow:visible;
+  overflow-wrap:break-word;
+  word-break:normal;
+}
+
+.captureNote{
+  margin:14px 42px 34px;
+  padding:18px;
+  background:#fff7df;
+  border:1px solid #efd28a;
+  color:#715000;
+  border-radius:18px;
+  font-size:19px;
+  line-height:1.8;
+  font-weight:900;
+  text-align:right;
+}
+
+@media(max-width:480px){
+  .wrapper{padding:14px}
+  .card{padding:18px;border-radius:22px}
+  .row,.reviewActions,.invoiceMeta{grid-template-columns:1fr}
+  .invoiceRow{grid-template-columns:105px 1fr;font-size:14px}
+  .invoiceTitle h2{font-size:24px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+  <div class="card">
+
+    <h1>حجز شاليه</h1>
+    <p class="subtitle">يرجى تعبئة بيانات الحجز وسيتم التواصل معك لتأكيد الطلب.</p>
+
+    <form id="bookingForm">
+
+      <div class="field">
+        <label>اسم صاحب الحجز</label>
+        <input type="text" id="name" required>
+      </div>
+
+      <div class="field">
+        <label>رقم الجوال</label>
+        <input type="tel" id="phone" maxlength="10" required>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>تاريخ ووقت الدخول</label>
+          <input type="datetime-local" id="checkin" required>
+        </div>
+
+        <div class="field">
+          <label>تاريخ ووقت الخروج</label>
+          <input type="datetime-local" id="checkout" required>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>عدد الأشخاص</label>
+          <input type="number" id="people" min="1" required>
+        </div>
+
+        <div class="field">
+          <label>نوع القسم</label>
+          <select id="sectionType" required>
+            <option value="">اختر القسم</option>
+            <option>قسم رجال</option>
+            <option>قسم نساء</option>
+            <option>قسم عائلات</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>الخدمات الإضافية</label>
+
+        <div class="serviceDropdown">
+          <button type="button" class="serviceBtn" id="serviceBtn">اختر الخدمات الإضافية</button>
+
+          <div class="serviceList" id="serviceList">
+            <label class="serviceItem"><span>مسبح دافئ</span><input type="checkbox" name="services" value="مسبح دافئ"></label>
+            <label class="serviceItem"><span>مسبح أطفال</span><input type="checkbox" name="services" value="مسبح أطفال"></label>
+            <label class="serviceItem"><span>ألعاب أطفال</span><input type="checkbox" name="services" value="ألعاب أطفال"></label>
+            <label class="serviceItem"><span>زحليقة مائية</span><input type="checkbox" name="services" value="زحليقة مائية"></label>
+            <label class="serviceItem"><span>ملعب كرة قدم</span><input type="checkbox" name="services" value="ملعب كرة قدم"></label>
+            <label class="serviceItem"><span>ملعب طائرة</span><input type="checkbox" name="services" value="ملعب طائرة"></label>
+            <label class="serviceItem"><span>جلسة خارجية</span><input type="checkbox" name="services" value="جلسة خارجية"></label>
+            <label class="serviceItem"><span>جلسة شعبية</span><input type="checkbox" name="services" value="جلسة شعبية"></label>
+            <label class="serviceItem"><span>مجلس رجال</span><input type="checkbox" name="services" value="مجلس رجال"></label>
+            <label class="serviceItem"><span>مجلس نساء</span><input type="checkbox" name="services" value="مجلس نساء"></label>
+            <label class="serviceItem"><span>صالة عائلية</span><input type="checkbox" name="services" value="صالة عائلية"></label>
+            <label class="serviceItem"><span>منطقة شواء</span><input type="checkbox" name="services" value="منطقة شواء"></label>
+            <label class="serviceItem"><span>مطبخ مجهز</span><input type="checkbox" name="services" value="مطبخ مجهز"></label>
+            <label class="serviceItem"><span>ثلاجة إضافية</span><input type="checkbox" name="services" value="ثلاجة إضافية"></label>
+            <label class="serviceItem"><span>تجهيز مناسبة</span><input type="checkbox" name="services" value="تجهيز مناسبة"></label>
+            <label class="serviceItem"><span>بوفيه وضيافة</span><input type="checkbox" name="services" value="بوفيه وضيافة"></label>
+            <label class="serviceItem"><span>مكبرات صوت</span><input type="checkbox" name="services" value="مكبرات صوت"></label>
+            <label class="serviceItem"><span>إضاءة خارجية</span><input type="checkbox" name="services" value="إضاءة خارجية"></label>
+            <label class="serviceItem"><span>تنظيف إضافي</span><input type="checkbox" name="services" value="تنظيف إضافي"></label>
+            <label class="serviceItem"><span>دخول مبكر</span><input type="checkbox" name="services" value="دخول مبكر"></label>
+            <label class="serviceItem"><span>خروج متأخر</span><input type="checkbox" name="services" value="خروج متأخر"></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>ملاحظات إضافية</label>
+        <textarea id="notes" rows="4"></textarea>
+      </div>
+
+      <div class="notice">
+        ملاحظة: لا يتم تأكيد الحجز إلا بعد التواصل معك ودفع قيمة الحجز أو العربون المطلوب.
+      </div>
+
+      <button type="submit">إرسال طلب الحجز</button>
+
+      <div class="reviewBox" id="reviewBox">
+
+        <div class="invoiceTop">
+          <div class="invoiceHead">
+            <div class="invoiceTitle">
+              <h2>فاتورة حجز</h2>
+              <p>طلب حجز شاليه</p>
+            </div>
+            <div class="invoiceBadge">بانتظار التأكيد</div>
+          </div>
+
+          <div class="invoiceMeta">
+            <div class="invoiceMetaBox">
+              <span>رقم الطلب</span>
+              <strong id="invoiceNo"></strong>
+            </div>
+            <div class="invoiceMetaBox">
+              <span>تاريخ الطلب</span>
+              <strong id="invoiceDate"></strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="invoiceContent">
+          <div class="invoiceRow"><span>اسم العميل</span><strong id="rName"></strong></div>
+          <div class="invoiceRow"><span>رقم الجوال</span><strong id="rPhone"></strong></div>
+          <div class="invoiceRow"><span>الدخول</span><strong id="rCheckin"></strong></div>
+          <div class="invoiceRow"><span>الخروج</span><strong id="rCheckout"></strong></div>
+          <div class="invoiceRow"><span>عدد الأشخاص</span><strong id="rPeople"></strong></div>
+          <div class="invoiceRow"><span>نوع القسم</span><strong id="rSection"></strong></div>
+          <div class="invoiceRow"><span>الخدمات</span><strong id="rServices"></strong></div>
+          <div class="invoiceRow"><span>الملاحظات</span><strong id="rNotes"></strong></div>
+        </div>
+
+        <div class="invoiceFooterNote">
+          لا يتم تأكيد الحجز إلا بعد التواصل مع العميل ودفع قيمة الحجز أو العربون المطلوب.
+        </div>
+
+        <div class="reviewActions" id="reviewActions">
+          <button type="button" class="editBtn" id="editBtn">تعديل البيانات</button>
+          <button type="button" class="confirmBtn" id="confirmBtn">تأكيد الإرسال</button>
+        </div>
+      </div>
+
+      <div class="sendingText" id="sendingText">جاري إرسال الطلب...</div>
+
+      <div class="success" id="successMsg">
+        تم إرسال طلب الحجز بنجاح
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<div class="captureInvoice" id="captureInvoice">
+  <div class="captureBox">
+
+    <div class="captureHeader">
+      <div>
+        <h2>فاتورة حجز</h2>
+        <p>طلب حجز شاليه</p>
+      </div>
+      <div class="captureBadge">بانتظار التأكيد</div>
+    </div>
+
+    <div class="captureMeta">
+      <div>
+        <span>رقم الطلب</span>
+        <strong id="cInvoiceNo"></strong>
+      </div>
+      <div>
+        <span>تاريخ الطلب</span>
+        <strong id="cInvoiceDate"></strong>
+      </div>
+    </div>
+
+    <div class="captureContent">
+      <div class="captureRow"><span>اسم العميل</span><strong id="cName"></strong></div>
+      <div class="captureRow"><span>رقم الجوال</span><strong id="cPhone"></strong></div>
+      <div class="captureRow"><span>الدخول</span><strong id="cCheckin"></strong></div>
+      <div class="captureRow"><span>الخروج</span><strong id="cCheckout"></strong></div>
+      <div class="captureRow"><span>عدد الأشخاص</span><strong id="cPeople"></strong></div>
+      <div class="captureRow"><span>نوع القسم</span><strong id="cSection"></strong></div>
+      <div class="captureRow full"><span>الخدمات الإضافية</span><strong id="cServices"></strong></div>
+      <div class="captureRow full"><span>الملاحظات</span><strong id="cNotes"></strong></div>
+    </div>
+
+    <div class="captureNote">
+      لا يتم تأكيد الحجز إلا بعد التواصل مع العميل ودفع قيمة الحجز أو العربون المطلوب.
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<script>
+const WORKER_URL = "https://sparkling-tooth-0b0e.na7765577.workers.dev/";
+
+const form = document.getElementById("bookingForm");
+const phone = document.getElementById("phone");
+const checkin = document.getElementById("checkin");
+const checkout = document.getElementById("checkout");
+const people = document.getElementById("people");
+const sectionType = document.getElementById("sectionType");
+const notes = document.getElementById("notes");
+
+const successMsg = document.getElementById("successMsg");
+const serviceBtn = document.getElementById("serviceBtn");
+const serviceList = document.getElementById("serviceList");
+const serviceChecks = document.querySelectorAll('input[name="services"]');
+
+const reviewBox = document.getElementById("reviewBox");
+const editBtn = document.getElementById("editBtn");
+const confirmBtn = document.getElementById("confirmBtn");
+const reviewActions = document.getElementById("reviewActions");
+const sendingText = document.getElementById("sendingText");
+const captureInvoice = document.getElementById("captureInvoice");
+
+serviceBtn.onclick = () => {
+  serviceList.classList.toggle("show");
+};
+
+document.addEventListener("click", function(e){
+  if(!e.target.closest(".serviceDropdown")){
+    serviceList.classList.remove("show");
+  }
+});
+
+serviceChecks.forEach(item=>{
+  item.addEventListener("change",()=>{
+    const selected = Array.from(serviceChecks)
+      .filter(i => i.checked)
+      .map(i => i.value);
+
+    serviceBtn.textContent = selected.length
+      ? "تم اختيار " + selected.length + " خدمة"
+      : "اختر الخدمات الإضافية";
+  });
+});
+
+phone.oninput = () => {
+  phone.value = phone.value.replace(/\D/g,'').slice(0,10);
+};
+
+checkin.onchange = () => {
+  checkout.min = checkin.value;
+};
+
+function formatInvoiceDate(){
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,"0");
+  const day = String(d.getDate()).padStart(2,"0");
+  return y + "/" + m + "/" + day;
+}
+
+function formatDateTime(value){
+  if(!value) return "";
+
+  const months = [
+    "يناير","فبراير","مارس","أبريل","مايو","يونيو",
+    "يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"
+  ];
+
+  const parts = value.split("T");
+  const datePart = parts[0] || "";
+  const timePart = parts[1] || "00:00";
+
+  const dateArr = datePart.split("-");
+  const year = dateArr[0];
+  const monthIndex = Number(dateArr[1]) - 1;
+  const day = Number(dateArr[2]);
+
+  const timeArr = timePart.split(":");
+  let hour = Number(timeArr[0]);
+  const minute = String(timeArr[1] || "00").padStart(2,"0");
+
+  const ampm = hour >= 12 ? "م" : "ص";
+  hour = hour % 12;
+  if(hour === 0) hour = 12;
+
+  return day + " " + months[monthIndex] + " " + year + " في " + hour + ":" + minute + " " + ampm;
+}
+
+function dataURLToBlob(dataURL){
+  const parts = dataURL.split(",");
+  const mime = parts[0].match(/:(.*?);/)[1];
+  const binary = atob(parts[1]);
+  let len = binary.length;
+  const u8 = new Uint8Array(len);
+
+  while(len--){
+    u8[len] = binary.charCodeAt(len);
+  }
+
+  return new Blob([u8], {type:mime});
+}
+
+function fillCaptureInvoice(){
+  document.getElementById("cInvoiceNo").textContent = document.getElementById("invoiceNo").textContent;
+  document.getElementById("cInvoiceDate").textContent = document.getElementById("invoiceDate").textContent;
+  document.getElementById("cName").textContent = document.getElementById("rName").textContent;
+  document.getElementById("cPhone").textContent = document.getElementById("rPhone").textContent;
+  document.getElementById("cCheckin").textContent = document.getElementById("rCheckin").textContent;
+  document.getElementById("cCheckout").textContent = document.getElementById("rCheckout").textContent;
+  document.getElementById("cPeople").textContent = document.getElementById("rPeople").textContent;
+  document.getElementById("cSection").textContent = document.getElementById("rSection").textContent;
+  document.getElementById("cServices").textContent = document.getElementById("rServices").textContent;
+  document.getElementById("cNotes").textContent = document.getElementById("rNotes").textContent;
+}
+
+form.onsubmit = (e) => {
+  e.preventDefault();
+
+  if(phone.value.length !== 10){
+    alert("يرجى إدخال رقم جوال صحيح");
+    return;
+  }
+
+  if(checkout.value && checkin.value && checkout.value <= checkin.value){
+    alert("تاريخ ووقت الخروج يجب أن يكون بعد تاريخ ووقت الدخول");
+    return;
+  }
+
+  const selectedServices = Array.from(serviceChecks)
+    .filter(i => i.checked)
+    .map(i => i.value);
+
+  document.getElementById("invoiceNo").textContent = "INV-" + Date.now().toString().slice(-6);
+  document.getElementById("invoiceDate").textContent = formatInvoiceDate();
+
+  document.getElementById("rName").textContent = document.getElementById("name").value;
+  document.getElementById("rPhone").textContent = phone.value;
+  document.getElementById("rCheckin").textContent = formatDateTime(checkin.value);
+  document.getElementById("rCheckout").textContent = formatDateTime(checkout.value);
+  document.getElementById("rPeople").textContent = people.value;
+  document.getElementById("rSection").textContent = sectionType.value;
+  document.getElementById("rServices").textContent = selectedServices.length ? selectedServices.join("، ") : "لا توجد خدمات إضافية";
+  document.getElementById("rNotes").textContent = notes.value || "لا توجد ملاحظات";
+
+  fillCaptureInvoice();
+
+  serviceList.classList.remove("show");
+  reviewBox.style.display = "block";
+  successMsg.style.display = "none";
+  sendingText.style.display = "none";
+  reviewActions.style.display = "grid";
+  reviewBox.scrollIntoView({behavior:"smooth", block:"center"});
+};
+
+editBtn.onclick = () => {
+  reviewBox.style.display = "none";
+};
+
+confirmBtn.onclick = async () => {
+  confirmBtn.disabled = true;
+  editBtn.disabled = true;
+
+  try{
+    reviewActions.style.display = "none";
+    sendingText.style.display = "block";
+
+    fillCaptureInvoice();
+
+    await new Promise(resolve => setTimeout(resolve, 700));
+
+    const canvas = await html2canvas(captureInvoice, {
+      scale: 2,
+      backgroundColor: "#ffffff",
+      useCORS: true,
+      allowTaint: true,
+      scrollX: 0,
+      scrollY: 0,
+      width: captureInvoice.scrollWidth,
+      height: captureInvoice.scrollHeight,
+      windowWidth: captureInvoice.scrollWidth,
+      windowHeight: captureInvoice.scrollHeight,
+      foreignObjectRendering: false
+    });
+
+    let blob = null;
+
+    if(canvas.toBlob){
+      blob = await new Promise(resolve => {
+        canvas.toBlob(resolve, "image/png", 1);
+      });
+    }
+
+    if(!blob){
+      const dataURL = canvas.toDataURL("image/png", 1);
+      blob = dataURLToBlob(dataURL);
+    }
+
+    const formData = new FormData();
+    formData.append("photo", blob, "booking-invoice.png");
+
+    const response = await fetch(WORKER_URL, {
+      method: "POST",
+      body: formData
+    });
+
+    if(!response.ok){
+      throw new Error("send failed");
+    }
+
+    reviewBox.style.display = "none";
+    successMsg.style.display = "block";
+    successMsg.scrollIntoView({behavior:"smooth", block:"center"});
+
+  }catch(error){
+    alert("تعذر إرسال الطلب، تأكد من رابط العامل وحاول مرة أخرى");
+  }
+
+  confirmBtn.disabled = false;
+  editBtn.disabled = false;
+  reviewActions.style.display = "grid";
+  sendingText.style.display = "none";
+};
+</script>
+
+</body>
+              </html>
